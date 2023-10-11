@@ -14,7 +14,7 @@ or
 ```
 
 ## Basic Composable Stable Pool Overview
-* See [test notebook](hhttps://github.com/icmoore/stableswappy/blob/main/notebooks/tests/composable_stable_test.ipynb) for example implementation
+* See [test notebook](https://github.com/icmoore/stableswappy/blob/main/notebooks/tests/composable_stable_test.ipynb) for example implementation
 * Python implementation of Composable Stable Pools 'broadly' consists of two main components
     * StableswapPoolMath.py: refactor of [StableSwap solidity contract code](https://solidity-by-example.org/defi/stable-swap-amm/), and is a slightly augmented version from [curvesim GH repos](https://github.com/curveresearch/curvesim/blob/main/curvesim/pool/stableswap/pool.py)
     * StableswapExchange.py: refactor of Curve's solidity contract code, created in-house (+ supporting classes)
