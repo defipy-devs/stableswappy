@@ -3,7 +3,6 @@
 # Date: Oct 2023
 
 from python.prod.erc import ERC20
-from python.prod.erc import StableswapERC20
 from python.prod.cst.exchg import StableswapExchange 
 from python.prod.group import StableswapERC20Group
 

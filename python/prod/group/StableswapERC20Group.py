@@ -4,7 +4,7 @@
 
 import numpy as np
 from decimal import Decimal
-from python.prod.erc import StableswapERC20
+from python.prod.erc import ERC20
 
 class StableswapERC20Group:
   
@@ -12,7 +12,7 @@ class StableswapERC20Group:
         self.tkns = []
         self.tkn_dic = {}            
         
-    def add_token(self, tkn: StableswapERC20):
+    def add_token(self, tkn: ERC20):
         if tkn.token_name not in self.tkn_dic:    
             self.tkns.append(tkn) 
             self.tkn_dic[tkn.token_name] = tkn

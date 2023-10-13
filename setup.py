@@ -4,7 +4,7 @@ with open('README.md') as f:
     long_description = f.read()
 
 setup(name='StableSwapPy',
-      version='0.0.1',
+      version='0.0.2',
       description='StableSwap for Python',
       long_description=long_description,
       long_description_content_type="text/markdown",

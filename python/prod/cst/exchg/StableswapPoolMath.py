@@ -397,7 +397,7 @@ class StableswapPoolMath():  # pylint: disable=too-many-instance-attributes
         return dy, fee, admin_fee
 
     # pylint: disable-next=too-many-locals
-    def calc_withdraw_one_coin(self, token_amount, i, use_fee=True):
+    def calc_withdraw_one_coin(self, token_amount, i, use_fee=False):
         """
         Calculate the amount in the i-th coin received from
         redeeming the given amount of LP tokens.
@@ -480,7 +480,7 @@ class StableswapPoolMath():  # pylint: disable=too-many-instance-attributes
 
         return mint_amount
 
-    def remove_liquidity_one_coin(self, token_amount, i):
+    def remove_liquidity_one_coin(self, token_amount, i, use_fee=False):
         """
         Redeem given LP token amount for the i-th coin.
 
@@ -496,12 +496,18 @@ class StableswapPoolMath():  # pylint: disable=too-many-instance-attributes
         int
             Redemption amount in i-th coin
         """
-        dy, dy_fee = self.calc_withdraw_one_coin(token_amount, i, use_fee=True)
-        admin_fee = dy_fee * self.admin_fee // 10**10
-        self.balances[i] -= dy + admin_fee
-        self.admin_balances[i] += admin_fee
-        self.tokens -= token_amount
-        return dy, dy_fee
+        if(use_fee):
+            dy, dy_fee = self.calc_withdraw_one_coin(token_amount, i, use_fee=use_fee)
+            admin_fee = dy_fee * self.admin_fee // 10**10
+            self.balances[i] -= dy + admin_fee
+            self.admin_balances[i] += admin_fee
+            self.tokens -= token_amount
+            return dy, dy_fee
+        else:
+            dy= self.calc_withdraw_one_coin(token_amount, i, use_fee=use_fee)
+            self.balances[i] -= dy 
+            self.tokens -= token_amount
+            return dy         
 
     # pylint: disable-next=too-many-locals
     def calc_token_amount(self, amounts, use_fee=False):
