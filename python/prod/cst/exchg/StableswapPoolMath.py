@@ -1,5 +1,5 @@
 # StableswapPoolMath.py
-# Author: Ian Moore ( imoore@syscoin.org )
+# Author: Ian Moore ( utiliwire@gmail.com )
 # Original: CurvePool class from curvesim
 # - https://github.com/curveresearch/curvesim/blob/main/curvesim/pool/stableswap/pool.py
 # Date: Oct 2023

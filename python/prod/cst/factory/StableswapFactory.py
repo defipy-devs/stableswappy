@@ -1,10 +1,10 @@
 # StableswapFactory.py
-# Author: Ian Moore ( imoore@syscoin.org )
+# Author: Ian Moore ( utiliwire@gmail.com )
 # Date: Oct 2023
 
-from python.prod.erc import ERC20
-from python.prod.cst.exchg import StableswapExchange 
-from python.prod.group import StableswapERC20Group
+from ...erc import ERC20
+from ..exchg import StableswapExchange 
+from ...vault import StableswapVault
 
 class StableswapFactory:
       
@@ -14,7 +14,7 @@ class StableswapFactory:
         self.token_to_exchange = {}
         self.exchange_to_tokens = {}  
         
-    def create_exchange(self, tkn_group : StableswapERC20Group, symbol: str, address : str):     
+    def create_exchange(self, tkn_group : StableswapVault, symbol: str, address : str):     
         
         if self.exchange_to_tokens.get(symbol):
             raise Exception("Exchange already created")    

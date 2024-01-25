@@ -1,12 +1,12 @@
-# StableswapERC20Group.py
-# Author: Ian Moore ( imoore@syscoin.org )
+# StableswapVault.py
+# Author: Ian Moore ( utiliwire@gmail.com )
 # Date: Oct 2023
 
 import numpy as np
 from decimal import Decimal
-from python.prod.erc import ERC20
+from ..erc import ERC20
 
-class StableswapERC20Group:
+class StableswapVault:
   
     def __init__(self) -> None:
         self.tkns = []

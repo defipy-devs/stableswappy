@@ -1,11 +1,11 @@
 # StableswapExchange.py
-# Author: Ian Moore ( imoore@syscoin.org )
+# Author: Ian Moore ( utiliwire@gmail.com )
 # Date: Oct 2023
 
 from decimal import Decimal
-from python.prod.group import StableswapERC20Group
-from python.prod.cst.factory import StableswapFactory
-from python.prod.cst.exchg.StableswapPoolMath import StableswapPoolMath 
+from ...vault import StableswapVault
+from ..factory import StableswapFactory
+from .StableswapPoolMath import StableswapPoolMath 
 
 import math
 
@@ -16,7 +16,7 @@ EXIT_FEE = 0
 
 class StableswapExchange():
     
-    def __init__(self, creator: StableswapFactory, tkn_group : StableswapERC20Group, symbol: str, addr : str) -> None:     
+    def __init__(self, creator: StableswapFactory, tkn_group : StableswapVault, symbol: str, addr : str) -> None:     
         self.factory = creator
         self.tkn_group = tkn_group
         self.name = tkn_group.get_name()
@@ -44,7 +44,7 @@ class StableswapExchange():
             print(f"Reserves: {reserve_str}")
             print(f"Liquidity: {self.total_supply} \n") 
             
-    def join_pool(self, tkn_group : StableswapERC20Group, ampl_coeff : float, to: str):
+    def join_pool(self, tkn_group : StableswapVault, ampl_coeff : float, to: str):
         
         """ join_pool
 
