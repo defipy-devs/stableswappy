@@ -70,7 +70,7 @@ class StableswapExchange():
 
             self.math_pool = StableswapPoolMath(A = ampl_coeff, D = decimal_amts, n = len(rates), 
                                                 rates = rates, fee = GWEI_SWAP_FEE)     
-            amt_liquidity_in = self._dec2amt(self.math_pool.tokens, GWEI_PRECISION) 
+            amt_liquidity_in = self.dec2amt(self.math_pool.tokens, GWEI_PRECISION) 
             
             if self.total_supply == 0:
                 self._mint('init_account', MINIMUM_LIQUIDITY) 
@@ -132,13 +132,13 @@ class StableswapExchange():
         
         tkn_amts_in = [len(self.tkn_reserves)]*5
     
-        tkn_in_index = self._get_tkn_index(tkn_in.token_name)
+        tkn_in_index = self.get_tkn_index(tkn_in.token_name)
         dec_tkn_in = self.tkn_decimals[tkn_in.token_name]
-        tkn_in_dec = self._amt2dec(tkn_amt_in, dec_tkn_in)
+        tkn_in_dec = self.amt2dec(tkn_amt_in, dec_tkn_in)
         
         tkn_amts_in[tkn_in_index] = tkn_in_dec
         out = self.math_pool.add_liquidity(tkn_amts_in)
-        liquidity_amt_in = self._dec2amt(out, GWEI_PRECISION)
+        liquidity_amt_in = self.dec2amt(out, GWEI_PRECISION)
         
         self.tkn_group.get_token(tkn_in.token_name).deposit(to, tkn_amt_in)        
         self.mint(liquidity_amt_in, tkn_amt_in, tkn_in, to)
@@ -168,18 +168,18 @@ class StableswapExchange():
         if liquidity_amt_out >= total_liquidity:
             liquidity_amt_out = total_liquidity          
         
-        tkn_out_index = self._get_tkn_index(tkn_out.token_name)
+        tkn_out_index = self.get_tkn_index(tkn_out.token_name)
         dec_tkn_out = self.tkn_decimals[tkn_out.token_name]
-        liquidity_out_dec = self._amt2dec(liquidity_amt_out, GWEI_PRECISION)  
+        liquidity_out_dec = self.amt2dec(liquidity_amt_out, GWEI_PRECISION)  
         
         dout, fee = self.math_pool.calc_withdraw_one_coin(liquidity_out_dec, tkn_out_index, True)
-        tkn_amt_out_min = self._dec2amt(dout, dec_tkn_out)
+        tkn_amt_out_min = self.dec2amt(dout, dec_tkn_out)
 
         assert tkn_amt_out_min <= self.tkn_reserves[tkn_out.token_name], 'Stableswap V1: INSUFFICIENT TKN AMOUNT'
         
         tkn_out_dec, tkn_out_fee_dec = self.math_pool.remove_liquidity_one_coin(liquidity_out_dec, tkn_out_index, True)
-        tkn_out_amt = self._dec2amt(tkn_out_dec, dec_tkn_out)
-        tkn_out_fee = self._dec2amt(tkn_out_fee_dec, dec_tkn_out)
+        tkn_out_amt = self.dec2amt(tkn_out_dec, dec_tkn_out)
+        tkn_out_fee = self.dec2amt(tkn_out_fee_dec, dec_tkn_out)
 
         self.burn(liquidity_amt_out, tkn_out_amt, tkn_out, to)
         self._tally_fees(tkn_out, tkn_out_fee)
@@ -296,17 +296,17 @@ class StableswapExchange():
         
         assert self.tkn_group.get_token(tkn_in.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
         
-        ind_tkn_in = self._get_tkn_index(tkn_in.token_name)
-        ind_tkn_out = self._get_tkn_index(tkn_out.token_name)
+        ind_tkn_in = self.get_tkn_index(tkn_in.token_name)
+        ind_tkn_out = self.get_tkn_index(tkn_out.token_name)
         
         dec_tkn_in = self.tkn_decimals[tkn_in.token_name]
         dec_tkn_out = self.tkn_decimals[tkn_out.token_name]
         
-        dx_tkn_in_dec = self._amt2dec(amt_tkn_in, dec_tkn_in)
+        dx_tkn_in_dec = self.amt2dec(amt_tkn_in, dec_tkn_in)
         out = self.math_pool.exchange(ind_tkn_in, ind_tkn_out, dx_tkn_in_dec)
         
-        tkn_out_amt = self._dec2amt(out[0], dec_tkn_out)
-        tkn_in_fee = self._dec2amt(out[1], dec_tkn_out) 
+        tkn_out_amt = self.dec2amt(out[0], dec_tkn_out)
+        tkn_in_fee = self.dec2amt(out[1], dec_tkn_out) 
         
         return {'tkn_out_amt': tkn_out_amt, 'tkn_in_nm': tkn_in.token_name, 'tkn_in_fee': tkn_in_fee}        
     
@@ -328,17 +328,17 @@ class StableswapExchange():
         
         assert self.tkn_group.get_token(tkn_in.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
         
-        ind_tkn_in = self._get_tkn_index(tkn_in.token_name)
-        ind_tkn_out = self._get_tkn_index(tkn_out.token_name)
+        ind_tkn_in = self.get_tkn_index(tkn_in.token_name)
+        ind_tkn_out = self.get_tkn_index(tkn_out.token_name)
         
         dec_tkn_in = self.tkn_decimals[tkn_in.token_name]
         dec_tkn_out = self.tkn_decimals[tkn_out.token_name]
         
-        dx_tkn_in_dec = self._amt2dec(amt_tkn_in, dec_tkn_in)
+        dx_tkn_in_dec = self.amt2dec(amt_tkn_in, dec_tkn_in)
         out = self.math_pool.get_amount_out(ind_tkn_in, ind_tkn_out, dx_tkn_in_dec)
         
-        tkn_out_amt = self._dec2amt(out[0], dec_tkn_out)
-        tkn_in_fee = self._dec2amt(out[1], dec_tkn_out) 
+        tkn_out_amt = self.dec2amt(out[0], dec_tkn_out)
+        tkn_in_fee = self.dec2amt(out[1], dec_tkn_out) 
         
         return {'tkn_out_amt': tkn_out_amt, 'tkn_in_nm': tkn_in.token_name, 'tkn_in_fee': tkn_in_fee}
         
@@ -428,13 +428,13 @@ class StableswapExchange():
         
         self.tkn_reserves[tkn_nm] = new_balance             
         
-    def _get_tkn_index(self, tkn_nm):
+    def get_tkn_index(self, tkn_nm):
         return list(self.tkn_reserves.keys()).index(tkn_nm)
         
-    def _amt2dec(self, tkn_amt, decimal):
+    def amt2dec(self, tkn_amt, decimal):
         return int(Decimal(str(tkn_amt))*Decimal(str(10**decimal)))
     
-    def _dec2amt(self, dec_amt, decimal):        
+    def dec2amt(self, dec_amt, decimal):        
         return float(Decimal(str(dec_amt))/Decimal(str(10**decimal)))    
             
     def get_math_pool(self):
@@ -445,7 +445,7 @@ class StableswapExchange():
         token_decimals = self.tkn_group.get_decimals()
         for tkn_nm in token_decimals:
             tkn_amt = self.tkn_reserves[tkn_nm]
-            decimal_amts[tkn.token_name] = self._amt2dec(tkn_amt, tkn.token_decimal) 
+            decimal_amts[tkn.token_name] = self.amt2dec(tkn_amt, tkn.token_decimal) 
         return decimal_amts  
  
 
@@ -465,8 +465,8 @@ class StableswapExchange():
         
         assert self.tkn_group.get_token(base_tkn.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
         
-        base_tkn_index = self._get_tkn_index(base_tkn.token_name)
-        opp_tkn_index = self._get_tkn_index(opp_tkn.token_name)
+        base_tkn_index = self.get_tkn_index(base_tkn.token_name)
+        opp_tkn_index = self.get_tkn_index(opp_tkn.token_name)
     
         return self.math_pool.dydx(base_tkn_index, opp_tkn_index, use_fee=fee)   
     
