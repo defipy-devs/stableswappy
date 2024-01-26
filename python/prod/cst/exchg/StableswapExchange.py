@@ -14,6 +14,13 @@ GWEI_SWAP_FEE = 1000000
 MINIMUM_LIQUIDITY = 1e-15
 EXIT_FEE = 0
 
+import math
+
+GWEI_PRECISION = 18
+GWEI_SWAP_FEE = 1000000
+MINIMUM_LIQUIDITY = 1e-15
+EXIT_FEE = 0
+
 class StableswapExchange():
     
     def __init__(self, creator: StableswapFactory, tkn_group : StableswapVault, symbol: str, addr : str) -> None:     
@@ -130,7 +137,7 @@ class StableswapExchange():
         
         assert self.tkn_group.get_token(tkn_in.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
         
-        tkn_amts_in = [len(self.tkn_reserves)]*5
+        tkn_amts_in = [0]*len(self.tkn_reserves)
     
         tkn_in_index = self.get_tkn_index(tkn_in.token_name)
         dec_tkn_in = self.tkn_decimals[tkn_in.token_name]
@@ -146,7 +153,7 @@ class StableswapExchange():
         
         return {'liquidity_amt_in': liquidity_amt_in, 'tkn_in_nm': tkn_in.token_name}
         
-    def remove_liquidity(self, liquidity_amt_out, tkn_out, to):
+    def remove_liquidity(self, liquidity_amt_out, tkn_out, to, use_fee = True):
         
         """ remove_liquidity
 
@@ -172,12 +179,21 @@ class StableswapExchange():
         dec_tkn_out = self.tkn_decimals[tkn_out.token_name]
         liquidity_out_dec = self.amt2dec(liquidity_amt_out, GWEI_PRECISION)  
         
-        dout, fee = self.math_pool.calc_withdraw_one_coin(liquidity_out_dec, tkn_out_index, True)
+        if(use_fee):
+            dout, fee = self.math_pool.calc_withdraw_one_coin(liquidity_out_dec, tkn_out_index, use_fee)
+        else:
+            dout = self.math_pool.calc_withdraw_one_coin(liquidity_out_dec, tkn_out_index, use_fee)
+            
         tkn_amt_out_min = self.dec2amt(dout, dec_tkn_out)
 
         assert tkn_amt_out_min <= self.tkn_reserves[tkn_out.token_name], 'Stableswap V1: INSUFFICIENT TKN AMOUNT'
         
-        tkn_out_dec, tkn_out_fee_dec = self.math_pool.remove_liquidity_one_coin(liquidity_out_dec, tkn_out_index, True)
+        if(use_fee):
+            tkn_out_dec, tkn_out_fee_dec = self.math_pool.remove_liquidity_one_coin(liquidity_out_dec, tkn_out_index, use_fee)
+        else:
+            tkn_out_dec = self.math_pool.remove_liquidity_one_coin(liquidity_out_dec, tkn_out_index, use_fee)
+            tkn_out_fee_dec = 0
+            
         tkn_out_amt = self.dec2amt(tkn_out_dec, dec_tkn_out)
         tkn_out_fee = self.dec2amt(tkn_out_fee_dec, dec_tkn_out)
 
@@ -445,7 +461,7 @@ class StableswapExchange():
         token_decimals = self.tkn_group.get_decimals()
         for tkn_nm in token_decimals:
             tkn_amt = self.tkn_reserves[tkn_nm]
-            decimal_amts[tkn.token_name] = self.amt2dec(tkn_amt, tkn.token_decimal) 
+            decimal_amts[tkn.token_name] = self._amt2dec(tkn_amt, tkn.token_decimal) 
         return decimal_amts  
  
 
@@ -485,5 +501,3 @@ class StableswapExchange():
         return self.tkn_reserves[token.token_name]    
             
 
-
-        

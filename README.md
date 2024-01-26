@@ -1,6 +1,6 @@
 # stableswappy
 Python package for StableSwap V1 modelling
-* Currently in Beta (version 0.0.4) until fully tested and analyzed
+* Currently in Beta (version 0.0.6) until fully tested and analyzed
 
 ## Install
 To install package:

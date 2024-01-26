@@ -4,7 +4,7 @@ with open('README.md') as f:
     long_description = f.read()
 
 setup(name='StableSwapPy',
-      version='0.0.4',
+      version='0.0.6',
       description='StableSwap for Python',
       long_description=long_description,
       long_description_content_type="text/markdown",
@@ -21,4 +21,7 @@ setup(name='StableSwapPy',
           'stableswappy.vault',
           'stableswappy.quote'
       ],
+      install_requires=[
+        'gmpy2 >= 2.0.8'
+      ],        
       zip_safe=False)
