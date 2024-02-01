@@ -4,13 +4,13 @@ with open('README.md') as f:
     long_description = f.read()
 
 setup(name='StableSwapPy',
-      version='0.0.6',
-      description='StableSwap for Python',
+      version='0.0.7',
+      description='StableSwap Analytics with Python',
       long_description=long_description,
       long_description_content_type="text/markdown",
       url='http://github.com/icmoore/stableswappy',
-      author = "icmoore",
-      author_email = "utiliwire@gmail.com",
+      author = "defipy-devs",
+      author_email = "defipy.devs@gmail.com",
       license='MIT',
       package_dir = {"stableswappy": "python/prod"},
       packages=[
