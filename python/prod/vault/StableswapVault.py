@@ -1,6 +1,6 @@
-# StableswapVault.py
-# Author: Ian Moore ( utiliwire@gmail.com )
-# Date: Oct 2023
+# Copyright [2023] [Ian Moore]
+# Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).
+# Email: defipy.devs@gmail.com
 
 import numpy as np
 from decimal import Decimal
@@ -25,11 +25,11 @@ class StableswapVault:
             
     def get_name(self):
         tkn_nms = self.get_names()
-        return "-".join(tkn_nms)  
+        return "|".join(tkn_nms)  
     
     def get_coins_str(self):
         tkn_nms = self.get_names()
-        return "/".join(tkn_nms)    
+        return "|".join(tkn_nms)    
  
     def get_token(self, tkn_name):
         return self.tkn_dic[tkn_name]

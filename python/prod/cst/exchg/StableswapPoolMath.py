@@ -1,8 +1,9 @@
-# StableswapPoolMath.py
-# Author: Ian Moore ( utiliwire@gmail.com )
+# Copyright [2023] [Ian Moore]
+# Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).
+# Email: defipy.devs@gmail.com
+
 # Original: CurvePool class from curvesim
 # - https://github.com/curveresearch/curvesim/blob/main/curvesim/pool/stableswap/pool.py
-# Date: Oct 2023
 
 from math import prod
 from gmpy2 import mpz

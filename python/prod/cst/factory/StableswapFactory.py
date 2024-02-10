@@ -1,9 +1,12 @@
-# StableswapFactory.py
-# Author: Ian Moore ( utiliwire@gmail.com )
-# Date: Oct 2023
+# Copyright [2023] [Ian Moore]
+# Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).
+# Email: defipy.devs@gmail.com
 
 from ...erc import ERC20
 from ..exchg import StableswapExchange 
+from ...utils.interfaces import IExchangeFactory 
+from ...utils.data import StableswapExchangeData
+from ...utils.data import FactoryData
 from ...vault import StableswapVault
 
 class StableswapFactory:
@@ -11,30 +14,31 @@ class StableswapFactory:
     def __init__(self, name: str, address: str) -> None:
         self.name = name
         self.address = address
-        self.token_to_exchange = {}
-        self.exchange_to_tokens = {}  
+        self.exchange_from_token = {}
+        self.token_from_exchange = {} 
+        self.parent_lp = None
         
-    def create_exchange(self, tkn_group : StableswapVault, symbol: str, address : str):     
+    def deploy(self, exchg_data : StableswapExchangeData):   
         
-        if self.exchange_to_tokens.get(symbol):
-            raise Exception("Exchange already created")    
+        vault = exchg_data.vault
+        symbol = exchg_data.symbol
+        address = exchg_data.address        
+     
+        assert symbol not in self.token_from_exchange, 'StableswapFactory: EXCHANGE_CREATED'   
             
-        new_exchange = StableswapExchange(self,  tkn_group, symbol, address)  
-    
-        self.token_to_exchange[tkn_group.get_name()] = new_exchange
-        self.exchange_to_tokens[new_exchange.name] = tkn_group.get_dict()
+        factory_struct = FactoryData(self.token_from_exchange,  self.parent_lp, self.name, self.address)
+        exchg_struct = StableswapExchangeData(vault = vault, symbol=symbol, address=address)
+        exchange = StableswapExchange(factory_struct, exchg_struct)             
+            
+        self.exchange_from_token[vault.get_name()] = exchange
+        self.token_from_exchange[exchange.name] = vault.get_dict()
         
-        return new_exchange  
+        return exchange  
     
     def get_exchange(self, token):
         
-        return self.token_to_exchange.get(token)
+        return self.exchange_from_token.get(token)
 
     def get_token(self, exchange):       
         
-        return self.exchange_to_token.get(exchange)
-
-    def token_count(self):
- 
-        return len(self.token_to_exchange)    
-    
+        return self.token_from_exchange.get(exchange)

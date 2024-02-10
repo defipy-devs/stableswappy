@@ -1,10 +1,13 @@
-# StableswapExchange.py
-# Author: Ian Moore ( utiliwire@gmail.com )
-# Date: Oct 2023
+# Copyright [2023] [Ian Moore]
+# Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).
+# Email: defipy.devs@gmail.com
 
 from decimal import Decimal
 from ...vault import StableswapVault
 from ..factory import StableswapFactory
+from ...utils.interfaces import IExchange 
+from ...utils.data import StableswapExchangeData
+from ...utils.data import FactoryData
 from .StableswapPoolMath import StableswapPoolMath 
 
 import math
@@ -21,14 +24,15 @@ GWEI_SWAP_FEE = 1000000
 MINIMUM_LIQUIDITY = 1e-15
 EXIT_FEE = 0
 
-class StableswapExchange():
+class StableswapExchange(IExchange):
     
-    def __init__(self, creator: StableswapFactory, tkn_group : StableswapVault, symbol: str, addr : str) -> None:     
-        self.factory = creator
-        self.tkn_group = tkn_group
-        self.name = tkn_group.get_name()
-        self.symbol = symbol 
-        self.addr = addr   
+    #def __init__(self, creator: StableswapFactory, vault : StableswapVault, symbol: str, addr : str) -> None:   
+    def __init__(self, factory_struct: FactoryData, exchg_struct: StableswapExchangeData):
+        self.factory = factory_struct
+        self.vault = exchg_struct.vault
+        self.name = self.vault.get_name()
+        self.symbol = exchg_struct.symbol
+        self.addr = exchg_struct.address   
         self.tkn_reserves = {}
         self.tkn_decimals = {}
         self.tkn_fees = {}
@@ -39,19 +43,19 @@ class StableswapExchange():
         self.math_pool = None
         self.joined = False 
         
-    def info(self):
+    def summary(self):
         if(self.total_supply == 0):
+            reserve_str = ", ".join([f'{tkn_nm} = {0}' for tkn_nm in self.tkn_reserves]) 
             print(f"Stableswap Exchange: {self.name} ({self.symbol})")
-            print(f"Coins: {self.tkn_group.get_coins_str()}")
+            print(f"Reserves: {reserve_str}")
             print(f"Liquidity: {self.total_supply} \n")             
         else:
-            reserve_str = " | ".join([f'{tkn_nm} = {self.tkn_reserves[tkn_nm]:.2f}' for tkn_nm in self.tkn_reserves]) 
+            reserve_str = ", ".join([f'{tkn_nm} = {self.tkn_reserves[tkn_nm]}' for tkn_nm in self.tkn_reserves]) 
             print(f"Stableswap Exchange: {self.name} ({self.symbol})")
-            print(f"Coins: {self.tkn_group.get_coins_str()}")
             print(f"Reserves: {reserve_str}")
-            print(f"Liquidity: {self.total_supply} \n") 
+            print(f"Liquidity: {self.total_supply} \n")         
             
-    def join_pool(self, tkn_group : StableswapVault, ampl_coeff : float, to: str):
+    def join_pool(self, vault : StableswapVault, ampl_coeff : float, to: str):
         
         """ join_pool
 
@@ -59,7 +63,7 @@ class StableswapExchange():
                 
             Parameters
             -------
-            tkn_group : StableswapERC20Group
+            vault : StableswapERC20Group
                 Group of ERC20 objects     
             amt_shares_in : float
                 Amount of pool shares in      
@@ -68,12 +72,12 @@ class StableswapExchange():
         """          
         
         if(not self.joined):
-            self.tkn_group = tkn_group
-            self.tkn_reserves = tkn_group.get_balances().copy()
-            self.tkn_decimals = tkn_group.get_decimals().copy()
+            self.vault = vault
+            self.tkn_reserves = vault.get_balances().copy()
+            self.tkn_decimals = vault.get_decimals().copy()
 
-            decimal_amts = list(self.tkn_group.get_decimal_amts().values())
-            rates = list(self.tkn_group.get_rates().values())
+            decimal_amts = list(self.vault.get_decimal_amts().values())
+            rates = list(self.vault.get_rates().values())
 
             self.math_pool = StableswapPoolMath(A = ampl_coeff, D = decimal_amts, n = len(rates), 
                                                 rates = rates, fee = GWEI_SWAP_FEE)     
@@ -106,12 +110,12 @@ class StableswapExchange():
                 User name/address                 
         """          
         
-        assert self.tkn_group.get_token(tkn_in.token_name) and self.tkn_group.get_token(tkn_out.token_name), "Stableswap: TOKEN NOT PART OF GROUP"
+        assert self.vault.get_token(tkn_in.token_name) and self.vault.get_token(tkn_out.token_name), "Stableswap: TOKEN NOT PART OF GROUP"
         amount_out = self.get_amount_out(amt_tkn_in, tkn_in, tkn_out)
         assert amount_out['tkn_out_amt'] <= tkn_out.token_total, 'Stableswap V1: INSUFFICIENT_OUTPUT_AMOUNT'   
     
         self._swap_math_pool(amt_tkn_in, tkn_in, tkn_out)    
-        self.tkn_group.get_token(tkn_in.token_name).deposit(to, amt_tkn_in)
+        self.vault.get_token(tkn_in.token_name).deposit(to, amt_tkn_in)
         self._swap(amount_out['tkn_out_amt'], amount_out['tkn_in_fee'], tkn_out, tkn_in, to)
         self._tally_fees(tkn_in, amount_out['tkn_in_fee'])
         
@@ -135,7 +139,7 @@ class StableswapExchange():
                 User name/address                  
         """    
         
-        assert self.tkn_group.get_token(tkn_in.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
+        assert self.vault.get_token(tkn_in.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
         
         tkn_amts_in = [0]*len(self.tkn_reserves)
     
@@ -147,7 +151,7 @@ class StableswapExchange():
         out = self.math_pool.add_liquidity(tkn_amts_in)
         liquidity_amt_in = self.dec2amt(out, GWEI_PRECISION)
         
-        self.tkn_group.get_token(tkn_in.token_name).deposit(to, tkn_amt_in)        
+        self.vault.get_token(tkn_in.token_name).deposit(to, tkn_amt_in)        
         self.mint(liquidity_amt_in, tkn_amt_in, tkn_in, to)
         self._tally_fees(tkn_in, 0)
         
@@ -169,7 +173,7 @@ class StableswapExchange():
                 Output token                
         """  
         
-        assert self.tkn_group.get_token(tkn_out.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
+        assert self.vault.get_token(tkn_out.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
         
         total_liquidity = self.liquidity_providers[to]
         if liquidity_amt_out >= total_liquidity:
@@ -221,11 +225,11 @@ class StableswapExchange():
                 User name/address                 
         """          
         
-        assert self.tkn_group.get_token(tkn_out.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
+        assert self.vault.get_token(tkn_out.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
         
         self._burn(_from, liquidity_out)
-        self.tkn_group.get_token(tkn_out.token_name).transfer(_from, tkn_out_amt)
-        new_balance = self.tkn_group.get_token(tkn_out.token_name).token_total
+        self.vault.get_token(tkn_out.token_name).transfer(_from, tkn_out_amt)
+        new_balance = self.vault.get_token(tkn_out.token_name).token_total
         self._update(new_balance, tkn_out.token_name) 
         
     def _burn(self, _from, liquidity_out):
@@ -265,8 +269,8 @@ class StableswapExchange():
                 User name/address                 
         """         
         
-        self.tkn_group.get_token(tkn_out.token_name).transfer(to, amt_swap)
-        new_tkn_balances = self.tkn_group.get_balances()
+        self.vault.get_token(tkn_out.token_name).transfer(to, amt_swap)
+        new_tkn_balances = self.vault.get_balances()
         
         res_balance_in = self.tkn_reserves[tkn_in.token_name]
         res_balance_out = self.tkn_reserves[tkn_out.token_name]
@@ -310,7 +314,7 @@ class StableswapExchange():
                 Output token                    
         """          
         
-        assert self.tkn_group.get_token(tkn_in.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
+        assert self.vault.get_token(tkn_in.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
         
         ind_tkn_in = self.get_tkn_index(tkn_in.token_name)
         ind_tkn_out = self.get_tkn_index(tkn_out.token_name)
@@ -342,7 +346,7 @@ class StableswapExchange():
                 Output token                    
         """          
         
-        assert self.tkn_group.get_token(tkn_in.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
+        assert self.vault.get_token(tkn_in.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
         
         ind_tkn_in = self.get_tkn_index(tkn_in.token_name)
         ind_tkn_out = self.get_tkn_index(tkn_out.token_name)
@@ -377,7 +381,7 @@ class StableswapExchange():
                 User name/address                 
         """          
         
-        tkn_balance = self.tkn_group.get_token(tkn_in.token_name).token_total
+        tkn_balance = self.vault.get_token(tkn_in.token_name).token_total
         _amt_tkn_in = tkn_balance - self.tkn_reserves[tkn_in.token_name]
         
         assert round(_amt_tkn_in,5) == round(amt_tkn_in,5), 'Stableswap V1: MINT ERROR'
@@ -458,7 +462,7 @@ class StableswapExchange():
     
     def get_reserve_decimal_amts(self):
         decimal_amts = {}
-        token_decimals = self.tkn_group.get_decimals()
+        token_decimals = self.vault.get_decimals()
         for tkn_nm in token_decimals:
             tkn_amt = self.tkn_reserves[tkn_nm]
             decimal_amts[tkn.token_name] = self._amt2dec(tkn_amt, tkn.token_decimal) 
@@ -479,7 +483,7 @@ class StableswapExchange():
                 Denomination token of price quote                                     
         """         
         
-        assert self.tkn_group.get_token(base_tkn.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
+        assert self.vault.get_token(base_tkn.token_name), 'Stableswap V1: TOKEN NOT PART OF GROUP'
         
         base_tkn_index = self.get_tkn_index(base_tkn.token_name)
         opp_tkn_index = self.get_tkn_index(opp_tkn.token_name)
