@@ -25,11 +25,11 @@ class StableswapVault:
             
     def get_name(self):
         tkn_nms = self.get_names()
-        return "|".join(tkn_nms)  
+        return "-".join(tkn_nms)  
     
     def get_coins_str(self):
         tkn_nms = self.get_names()
-        return "|".join(tkn_nms)    
+        return "-".join(tkn_nms)    
  
     def get_token(self, tkn_name):
         return self.tkn_dic[tkn_name]
