@@ -5,7 +5,7 @@ Python package for StableSwap V1 modelling
 ## Install
 To install package:
 ```
-> git clone https://github.com/icmoore/stableswappy
+> git clone https://github.com/defipy-devs/stableswappy
 > pip install .
 ```
 or
