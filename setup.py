@@ -19,7 +19,9 @@ setup(name='StableSwapPy',
           'stableswappy.cst.factory',
           'stableswappy.erc',
           'stableswappy.vault',
-          'stableswappy.quote'
+          'stableswappy.quote',
+          'stableswappy.utils.interfaces',
+          'stableswappy.utils.data'           
       ],
       install_requires=[
         'gmpy2 >= 2.0.8'
