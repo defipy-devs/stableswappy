@@ -8,7 +8,31 @@ GWEI_PRECISION = 18
 
 class CSQuote():
     
+    """ 
+        Composable stable liquidity pool token quotes (ie, price, reserve and liquidity)
+    """         
+    
     def get_lp_from_amount(self, lp, tkn, tkn_amt_in):
+        
+        """ get_lp_from_amount
+
+            Get amount of liquidity, given an amount of input token
+                
+            Parameters
+            -----------------
+            lp : UniswapExchange
+                Uniswap LP    
+            tkn: ERC20
+                Token asset from CWPT set  
+            amount_in: float
+                Amount of input token             
+
+            Returns
+            -----------------
+            lp_amt: float
+                Amount of liquidity
+        """         
+        
         if(tkn_amt_in > 0):
             tkn_amts_in = [0]*len(lp.tkn_reserves)
 

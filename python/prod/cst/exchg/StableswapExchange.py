@@ -62,7 +62,7 @@ class StableswapExchange(IExchange):
             Initialize a Stableswap pool, and add liquidity for all asset deposit
                 
             Parameters
-            -------
+            ---------------
             vault : StableswapERC20Group
                 Group of ERC20 objects     
             amt_shares_in : float
@@ -99,7 +99,7 @@ class StableswapExchange(IExchange):
             Swap output token given input token 
                 
             Parameters
-            -------
+            ---------------
             amt_tkn_in : float
                 Amount of input token requested for swaping   
             tkn_in : ERC20
@@ -128,9 +128,7 @@ class StableswapExchange(IExchange):
             Add token amounts for LP token
                 
             Parameters
-            -------
-            Parameters
-            -------
+            ---------------
             amt_shares_in : float
                 Amount of pool shares coming in     
             tkn_in : ERC20
@@ -164,7 +162,7 @@ class StableswapExchange(IExchange):
             Remove liquidity from specified token in the pool based on lp amount
                 
             Parameters
-            -------
+            ---------------
             to : str
                 receiving user address  
             liquidity_amt_out : float
@@ -214,7 +212,7 @@ class StableswapExchange(IExchange):
             Burn liquidity from token based on amount of liquidity and amount of token
                 
             Parameters
-            -------
+            ---------------
             liquidity_out : float
                 Amount of liquidity requested for burn              
             amt_tkn_out : float
@@ -239,7 +237,7 @@ class StableswapExchange(IExchange):
             Burn liquidity from token based on amount of liquidity
                 
             Parameters
-            -------
+            ---------------
             liquidity_out : float
                 Amount of liquidity requested for burn        
             _from : str
@@ -258,7 +256,7 @@ class StableswapExchange(IExchange):
             Swap output token given input token 
                 
             Parameters
-            -------
+            ---------------
             amt_out : float
                 Amount of input token requested for swaping   
             tkn_in : ERC20
@@ -305,7 +303,7 @@ class StableswapExchange(IExchange):
             Given some amount of an asset, quotes an equivalent amount of the other asset
                 
             Parameters
-            -------
+            ---------------
             amt_tkn_in : float
                 Amount of token requested for quote            
             tkn_in : ERC20
@@ -337,7 +335,7 @@ class StableswapExchange(IExchange):
             Given some amount of an asset, quotes an equivalent amount of the other asset
                 
             Parameters
-            -------
+            ---------------
             amt_tkn_in : float
                 Amount of token requested for quote            
             tkn_in : ERC20
@@ -370,7 +368,7 @@ class StableswapExchange(IExchange):
             Update reserve amount for specific token in the pool
                 
             Parameters
-            -------
+            ---------------
             new_shares : float
                 Amount of new pool shares requested for minting   
             amt_tkn_in : float
@@ -398,7 +396,7 @@ class StableswapExchange(IExchange):
             Tally fee from swap and record last collected fee
                 
             Parameters
-            -------   
+            ---------------   
             tkn : ERC20
                 Token where fees are being collected for     
             fee : float
@@ -417,7 +415,7 @@ class StableswapExchange(IExchange):
             Update reserve amount for specific token in the pool
                 
             Parameters
-            -------
+            ---------------
             value : float
                 Amount of new pool shares requested for minting                     
             to : str
@@ -439,7 +437,7 @@ class StableswapExchange(IExchange):
             Update reserve amounts specified token
                 
             Parameters
-            -------   
+            ---------------   
             new_balance : float
                 New reserve amount of token      
             tkn_nm : ERC20
@@ -458,6 +456,17 @@ class StableswapExchange(IExchange):
         return float(Decimal(str(dec_amt))/Decimal(str(10**decimal)))    
             
     def get_math_pool(self):
+        
+        """ get_math_pool
+
+            Get underlying StableswapPoolMath object
+                
+            Parameters
+            ---------------
+            math_pool : StableswapPoolMath
+                Stableswap math implementation from curveresearch github repos                                        
+        """          
+        
         return self.math_pool
     
     def get_reserve_decimal_amts(self):
@@ -476,7 +485,7 @@ class StableswapExchange(IExchange):
             Get price of select token in the exchange pair
                 
             Parameters
-            -------
+            ---------------
             base_tkn : float
                 Base token request for price quote           
             opp_tkn : ERC20
@@ -497,7 +506,7 @@ class StableswapExchange(IExchange):
             Get reserve amount of select token in the pool
                 
             Parameters
-            -------
+            ---------------
             token : ERC20
                 ERC20 token                
         """            
