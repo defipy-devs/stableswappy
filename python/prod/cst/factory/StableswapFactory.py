@@ -10,6 +10,17 @@ from ...utils.data import FactoryData
 from ...vault import StableswapVault
 
 class StableswapFactory:
+    
+    """ 
+        Create Stableswap liquidity pools for given token sets
+        
+        Parameters
+        ---------------
+        self.name : str
+            Token name 
+        self.address : str
+            Address name                   
+    """         
       
     def __init__(self, name: str, address: str) -> None:
         self.name = name
@@ -19,6 +30,21 @@ class StableswapFactory:
         self.parent_lp = None
         
     def deploy(self, exchg_data : StableswapExchangeData):   
+        
+        """ deploy
+
+            Deploy a Stableswap liquidity pool (LP) exchange
+                
+            Parameters
+            -----------------
+            exchg_data : StableswapExchangeData
+                Exchange initialization data     
+
+            Returns
+            -----------------
+            exchange : StableswapExchange
+                Newly created exchange that is also a LP token                    
+        """           
         
         vault = exchg_data.vault
         symbol = exchg_data.symbol
@@ -37,8 +63,38 @@ class StableswapFactory:
     
     def get_exchange(self, token):
         
+        """ get_exchange
+
+            Get exchange from given token
+                
+            Parameters
+            -----------------
+            token : ERC20
+                receiving user address      
+                
+            Returns
+            -----------------
+            exchange : StableswapExchange
+                exchange from mapped token                    
+        """          
+        
         return self.exchange_from_token.get(token)
 
     def get_token(self, exchange):       
+        
+        """ get_token
+
+            Get token set from exchange
+                
+            Parameters
+            -----------------
+            exchange : StableswapExchange
+                receiving user address      
+                
+            Returns
+            -----------------
+            token : ERC20 
+                token from mapped exchange                     
+        """           
         
         return self.token_from_exchange.get(exchange)

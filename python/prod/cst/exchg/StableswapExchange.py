@@ -26,7 +26,17 @@ EXIT_FEE = 0
 
 class StableswapExchange(IExchange):
     
-    #def __init__(self, creator: StableswapFactory, vault : StableswapVault, symbol: str, addr : str) -> None:   
+    """ 
+        How Stableswap calls liquidity pools and uses the constant weighted product automated market maker
+
+        Parameters
+        ---------------
+        self.factory_struct : FactoryData
+            Factory data
+        self.exchg_struct : StableswapExchangeData
+            Stableswap exchange data         
+    """       
+    
     def __init__(self, factory_struct: FactoryData, exchg_struct: StableswapExchangeData):
         self.factory = factory_struct
         self.vault = exchg_struct.vault
@@ -44,6 +54,11 @@ class StableswapExchange(IExchange):
         self.joined = False 
         
     def summary(self):
+     
+        """ 
+            Print-out summary on current liquidity pool state   
+        """        
+        
         if(self.total_supply == 0):
             reserve_str = ", ".join([f'{tkn_nm} = {0}' for tkn_nm in self.tkn_reserves]) 
             print(f"Stableswap Exchange: {self.name} ({self.symbol})")

@@ -1,6 +1,6 @@
 # stableswappy
 Python package for StableSwap V1 modelling
-* Currently in Beta (version 0.0.10) until fully tested and analyzed
+* Currently in Beta (version 0.0.11) until fully tested and analyzed
 
 ## Install
 Must first install gmpy2 python package to handle the precision within the StableSwap protocol (requires CPython 3.7 or above). To install the latest release with pip:
