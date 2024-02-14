@@ -1,9 +1,13 @@
 # stableswappy
 Python package for StableSwap V1 modelling
-* Currently in Beta (version 0.0.9) until fully tested and analyzed
+* Currently in Beta (version 0.0.10) until fully tested and analyzed
 
 ## Install
-To install package:
+Must first install gmpy2 python package to handle the precision within the StableSwap protocol (requires CPython 3.7 or above). To install the latest release with pip:
+```
+> pip install gmpy2
+```
+Also, in many cases will need to have required libraries (GMP, MPFR and MPC) already installed on your system, see [gmpy2 installation docs](https://gmpy2.readthedocs.io/en/latest/install.html) for more info. Once setup, to install the latest release of StableSwapPy with pip:
 ```
 > git clone https://github.com/defipy-devs/stableswappy
 > pip install .
