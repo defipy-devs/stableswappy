@@ -12,7 +12,7 @@ or
 > pip install StableswapPy
 ```
 
-## Balancer
+## Stableswap
 
 * See [test notebook](https://github.com/defipy-devs/stableswappy/blob/main/notebooks/tests/test_abstract.ipynb) 
 for basic usage
