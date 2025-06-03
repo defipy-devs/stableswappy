@@ -1,25 +1,124 @@
 # stableswappy
-Python package for StableSwap V1 modelling
-* Currently in Beta (version 0.0.11) until fully tested and analyzed
+Python package for Stableswap V1 modelling
 
 ## Install
-Must first install gmpy2 python package to handle the precision within the StableSwap protocol (requires CPython 3.7 or above). To install the latest release with pip:
-```
-> pip install gmpy2
-```
-Also, in many cases will need to have required libraries (GMP, MPFR and MPC) already installed on your system, see [gmpy2 installation docs](https://gmpy2.readthedocs.io/en/latest/install.html) for more info. Once setup, to install the latest release of StableSwapPy with pip:
+To install package:
 ```
 > git clone https://github.com/defipy-devs/stableswappy
 > pip install .
 ```
 or
 ```
-> pip install StableSwapPy
+> pip install StableswapPy
 ```
 
-## Basic Composable Stable Pool Overview
-* See [test notebook](https://github.com/icmoore/stableswappy/blob/main/notebooks/tests/composable_stable_test.ipynb) for example implementation
-* Python implementation of Composable Stable Pools 'broadly' consists of two main components
-    * StableswapPoolMath.py: refactor of [StableSwap solidity contract code](https://solidity-by-example.org/defi/stable-swap-amm/), and is a slightly augmented version from [curvesim GH repos](https://github.com/curveresearch/curvesim/blob/main/curvesim/pool/stableswap/pool.py)
-    * StableswapExchange.py: refactor of Curve's solidity contract code, created in-house (+ supporting classes)
+## Balancer
 
+* See [test notebook](https://github.com/defipy-devs/stableswappy/blob/main/notebooks/tests/test_abstract.ipynb) 
+for basic usage
+
+```
+from stableswappy import *
+
+user_nm = 'user_test'
+
+user_nm = 'user_test'
+
+AMPL_COEFF = 2000 
+
+amt_dai = 79566307.559825807715868071
+decimal_dai = 18
+
+amt_usdc = 81345068.187939
+decimal_usdc = 6
+
+amt_usdt = 55663250.772939
+decimal_usdt = 6
+
+dai = ERC20("DAI", "0xA0b", decimal_dai)
+dai.deposit(None, amt_dai)
+
+usdc = ERC20("USDC", "0xf93", decimal_usdc)
+usdc.deposit(None, amt_usdc)
+
+usdt = ERC20("USDT", "0xd7c", decimal_usdt)
+usdt.deposit(None, amt_usdt)
+
+sgrp = StableswapVault()
+sgrp.add_token(dai)
+sgrp.add_token(usdc)
+sgrp.add_token(usdt)
+
+sfactory = StableswapFactory("Pool factory", "0x2")
+exchg_data = StableswapExchangeData(vault = sgrp, symbol="LP", address="0x011")
+lp = sfactory.deploy(exchg_data)
+
+Join().apply(lp, user_nm, AMPL_COEFF)
+lp.summary()
+```
+
+#### OUTPUT:
+Stableswap Exchange: DAI-USDC-USDT (LP) <br/>
+Reserves: DAI = 79566307.55982581, USDC = 81345068.187939, USDT = 55663250.772939 <br/>
+Liquidity: 216573027.91811988  <br/> 
+
+
+### Swap (out-given-in)
+
+```
+amt_tkn_in = 10000
+tkn_in = dai
+tkn_out = weth
+
+res = Swap(Proc.SWAPOUT).apply(lp, tkn_in, tkn_out, user_nm, amt_tkn_in)
+lp.summary()
+
+print(f"{amt_tkn_in} {tkn_in.token_name} was swapped into {res['tkn_out_amt']} {tkn_out.token_name}")
+```
+
+#### OUTPUT:
+Balancer Exchange: DAI-WETH (LP) <br/>
+Reserves: DAI = 10010000, WETH = 67721.75437414162 <br/>
+Weights: DAI = 0.2, WETH = 0.8 <br/>
+Pool Shares: 100 <br/><br/>   
+
+### Swap 
+
+```
+usdc_before = lp.get_reserve(usdc)
+usdt_before = lp.get_reserve(usdt)
+
+amt_tkn_in = 10000
+tkn_in = usdc
+tkn_out = usdt
+res = Swap().apply(lp, tkn_in, tkn_out, user_nm, amt_tkn_in)
+lp.summary()
+
+print(f"{amt_tkn_in} {tkn_in.token_name} was swapped for {res['tkn_out_amt']} {tkn_out.token_name}")
+```
+
+#### OUTPUT:
+Stableswap Exchange: DAI-USDC-USDT (LP) <br/>
+Reserves: DAI = 79566307.55982581, USDC = 81355068.187939, USDT = 55653253.910191 <br/>
+Liquidity: 216573027.91811988 <br/> 
+
+10000 USDC was swapped for 9996.862748 USDT  <br/><br/> 
+
+### Swap 
+```
+usdc_before = lp.get_reserve(usdc)
+dai_before = lp.get_reserve(dai)
+
+amt_tkn_in = 10000
+tkn_in = usdc
+tkn_out = dai
+res = Swap().apply(lp, tkn_in, tkn_out, user_nm, amt_tkn_in)
+lp.summary()
+
+print(f"{amt_tkn_in} {tkn_in.token_name} was swapped for {res['tkn_out_amt']} {tkn_out.token_name}")
+```
+Stableswap Exchange: DAI-USDC-USDT (LP) <br/>
+Reserves: DAI = 79556308.6645169, USDC = 81365068.187939, USDT = 55653253.910191 <br/>
+Liquidity: 216573027.91811988 <br/> 
+
+10000 USDC was swapped for 9998.895308918858 DAI <br/><br/> 
