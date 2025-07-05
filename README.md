@@ -102,3 +102,8 @@ Reserves: DAI = 79556308.6645169, USDC = 81365068.187939, USDT = 55653253.910191
 Liquidity: 216573027.91811988 <br/> 
 
 10000 USDC was swapped for 9998.895308918858 DAI <br/><br/> 
+
+## License
+Licensed under the Apache License, Version 2.0.  
+See [LICENSE](./LICENSE) and [NOTICE](./NOTICE) for details.  
+Portions of this project may include code from third-party projects under compatible open-source licenses.
