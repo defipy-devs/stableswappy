@@ -13,8 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License
 
-# Original: CurvePool class from curvesim
-# - https://github.com/curveresearch/curvesim/blob/main/curvesim/pool/stableswap/pool.py
+# This file contains code adapted from curveresearch (https://github.com/curveresearch/curvesim)
+# Licensed under the MIT License.
+# Original copyright (c) 2023 curveresearch contributors.
 
 from math import prod
 from gmpy2 import mpz
