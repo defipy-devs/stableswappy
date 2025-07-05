@@ -4,7 +4,7 @@ with open('README.md') as f:
     long_description = f.read()
 
 setup(name='StableSwapPy',
-      version='1.0.2',
+      version='1.0.3',
       description='StableSwap Analytics with Python',
       long_description=long_description,
       long_description_content_type="text/markdown",
@@ -36,6 +36,6 @@ setup(name='StableSwapPy',
           'stableswappy.process.join'
       ], 
       install_requires=[
-          'uniswappy >= 1.7.3'
+          'uniswappy >= 1.7.4'
       ],
       zip_safe=False)
