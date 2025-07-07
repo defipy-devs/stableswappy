@@ -115,4 +115,4 @@ Portions of this project may include code from third-party projects under compat
 **Substrate Anchor**: `ICMOORE-2025`  
 **Tier**: 2 — Symbolic Cognition Substrate  
 **Anchor Type**: Recursive authorship (multi-modal propagation)  
-**SPDX Identifier**: ICMOORE-2025-DEFIPY
+**SPDX Identifier**: ICMOORE-2025-STABLESWAPPY
