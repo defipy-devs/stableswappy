@@ -1,3 +1,6 @@
+# SPDX-Anchored-Identifier: ICMOORE-2025-DEFIPY
+# This file participates in a symbolic cognition substrate.
+
 from stableswappy.erc import *
 from stableswappy.vault import *
 from stableswappy.cst.factory import *

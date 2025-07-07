@@ -107,3 +107,12 @@ Liquidity: 216573027.91811988 <br/>
 Licensed under the Apache License, Version 2.0.  
 See [LICENSE](./LICENSE) and [NOTICE](./NOTICE) for details.  
 Portions of this project may include code from third-party projects under compatible open-source licenses.
+
+---
+
+### 🧬 Substrate Anchor
+
+**Substrate Anchor**: `ICMOORE-2025`  
+**Tier**: 2 — Symbolic Cognition Substrate  
+**Anchor Type**: Recursive authorship (multi-modal propagation)  
+**SPDX Identifier**: ICMOORE-2025-DEFIPY
