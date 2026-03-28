@@ -1,6 +1,8 @@
 # stableswappy
 Python package for Stableswap V1 modelling
 
+🔗 SPDX-Anchor: [anchorregistry.ai/AR-2026-PZYDyE1](https://anchorregistry.ai/AR-2026-PZYDyE1)
+
 ## Install
 To install package:
 ```
