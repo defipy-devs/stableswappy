@@ -105,6 +105,25 @@ Liquidity: 216573027.91811988 <br/>
 
 10000 USDC was swapped for 9998.895308918858 DAI <br/><br/> 
 
+## Testing
+
+Run the full test suite from the repo root:
+
+```
+> python -m pytest python/test/ -v
+```
+
+Tests cover:
+
+- **Process**: join, swap (near-peg slippage, fee verification, reserve changes), add/remove liquidity
+- **Math**: D invariant stability, exchange output, virtual price, spot price (`dydx`), and `calc_token_amount`
+
+### Requirements
+
+```
+> pip install pytest gmpy2
+```
+
 ## License
 Licensed under the Apache License, Version 2.0.  
 See [LICENSE](./LICENSE) and [NOTICE](./NOTICE) for details.  
