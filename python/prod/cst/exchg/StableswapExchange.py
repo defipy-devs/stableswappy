@@ -16,7 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License
 
-from decimal import Decimal
+from decimal import Decimal, getcontext
+
+getcontext().prec = 50  # Financial-grade precision for stableswap amt/dec conversions
 from ...vault import StableswapVault
 from ..factory import StableswapFactory
 from ...utils.interfaces import IExchange 
