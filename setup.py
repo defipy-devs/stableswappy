@@ -4,7 +4,7 @@ with open('README.md') as f:
     long_description = f.read()
 
 setup(name='StableSwapPy',
-      version='1.0.4',
+      version='1.1.0',
       description='StableSwap Analytics with Python',
       long_description=long_description,
       long_description_content_type="text/markdown",
@@ -26,6 +26,8 @@ setup(name='StableSwapPy',
           'stableswappy',
           'stableswappy.cst.exchg',
           'stableswappy.cst.factory',
+          'stableswappy.analytics',
+          'stableswappy.analytics.risk',
           'stableswappy.erc',
           'stableswappy.vault',
           'stableswappy.quote',
@@ -34,8 +36,12 @@ setup(name='StableSwapPy',
           'stableswappy.process.liquidity',
           'stableswappy.process.swap',
           'stableswappy.process.join'
-      ], 
+      ],
       install_requires=[
-          'uniswappy >= 1.7.4'
+          # Parent AMM library (provides ERC, Wallet, math models, process base)
+          'uniswappy >= 1.7.6',
+          # Direct third-party deps
+          'numpy >= 1.21',
+          'gmpy2 >= 2.1',  # arbitrary-precision math for stableswap invariant
       ],
       zip_safe=False)
