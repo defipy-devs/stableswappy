@@ -3,6 +3,10 @@ Python package for Stableswap V1 modelling
 
 🔗 SPDX-Anchor: [anchorregistry.ai/AR-2026-PZYDyE1](https://anchorregistry.ai/AR-2026-PZYDyE1)
 
+## 📝 Disclaimer
+
+**StableSwapPy** (StableswapPy) is an **unofficial**, independent Python library for analytics, simulation, and modeling of Curve-style StableSwap AMMs. It is not affiliated with, endorsed by, or associated with Curve Finance.
+
 ## Install
 To install package:
 ```
